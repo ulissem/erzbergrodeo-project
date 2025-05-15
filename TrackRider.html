@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Erzbergrodeo Rider Tracker</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #2b2b2b; /* Dark background */
+        color: #e0e0e0; /* Light text for contrast */
+        margin: 0;
+        padding: 2rem;
+      }
+
+      h2 {
+        text-align: center;
+        color: #ffcc00; /* Red Bull yellow for headings */
+        font-size: 2rem;
+      }
+
+      label {
+        font-size: 1.1rem;
+        color: #ffcc00;
+      }
+
+      input {
+        padding: 0.7rem;
+        font-size: 1rem;
+        width: 150px;
+        border: 2px solid #ffcc00;
+        border-radius: 4px;
+        background-color: #3c3c3c;
+        color: white;
+      }
+
+      button {
+        padding: 0.7rem 1.2rem;
+        background-color: #ffcc00;
+        border: none;
+        border-radius: 4px;
+        color: #2b2b2b;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #e0a800;
+      }
+
+      .rider-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        margin-top: 2rem;
+        background: #333;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .rider-info h3 {
+        font-size: 1.8rem;
+        color: #ffcc00;
+        text-align: center;
+        grid-column: span 2;
+      }
+
+      .info-table {
+        display: flex;
+        justify-content: space-between;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .left-side {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .left-side div {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+      }
+
+      .left-side strong {
+        color: #ffcc00;
+      }
+
+      .right-side {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .right-side div {
+        font-size: 2.5rem;
+        color: #ff4747;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .right-side #lastCheckpointName {
+        font-style: italic;
+        color: #ffcc00;
+      }
+
+      .progress-bar-container {
+        display: flex;
+        width: 100%;
+        height: 20px;
+        background-color: #ddd;
+      }
+
+      .progress-bar-segment {
+        flex: 1;
+        height: 100%;
+        background-color: #4caf50; /* Green color for completed segments */
+        border-right: 1px solid #fff; /* Optional: Add separator between segments */
+      }
+
+      .progress-bar-segment.incomplete {
+        background-color: #909090; /* Gray color for incomplete segments */
+      }
+
+      .cp-table {
+        margin-top: 2rem;
+        width: 100%;
+        border-collapse: collapse;
+        background: #2c2c2c;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .cp-table th,
+      .cp-table td {
+        padding: 12px 16px;
+        text-align: center;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+      }
+
+      .cp-table th {
+        background: #222;
+        color: #f1f1f1;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .cp-table td {
+        background: #333;
+        transition: background 0.3s ease;
+      }
+
+      .cp-table tr:hover td {
+        background: #4a4a4a;
+      }
+
+      .cp-table td:nth-child(1) {
+        color: #f0ad4e;
+        font-weight: 700;
+      }
+
+      .cp-table td:nth-child(2) {
+        color: #d9534f;
+        font-weight: 400;
+        font-style: italic;
+      }
+
+      .cp-table td:nth-child(3) {
+        color: a8a8a8;
+        font-weight: 400;
+      }
+
+      .cp-table td,
+      .cp-table th {
+        border-bottom: 1px solid #444;
+      }
+
+      .cp-table td:first-child {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      .cp-table td:nth-child(2) {
+        font-size: 1.1rem;
+      }
+
+      .cp-table td:nth-child(3) {
+        font-size: 1.1rem;
+      }
+
+      .cp-table tr:last-child td {
+        border-bottom: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Rider Tracker</h2>
+    <label for="bib">Enter Bib #: </label>
+    <input type="number" id="bib" placeholder="Enter Bib Number" />
+    <button id="trackButton">Track Rider</button>
+
+    <div class="rider-info" id="riderInfo" style="display: none">
+      <h3 id="riderName"></h3>
+
+      <div class="info-table">
+        <div class="left-side">
+          <div>
+            <strong>Start Time:</strong>
+            <span id="startTime"></span>
+          </div>
+          <div>
+            <strong>Total Time:</strong>
+            <span id="totalTime"></span>
+          </div>
+        </div>
+
+        <div class="right-side">
+          <div>
+            <span id="lastCP"></span>
+          </div>
+          <div>
+            <span id="lastCheckpointName"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="progressBarContainer" class="progress-bar-container">
+        <!-- Segments will be dynamically added here -->
+      </div>
+
+      <table class="cp-table" id="cpTable">
+        <thead>
+          <tr>
+            <th>CP</th>
+            <th>Checkpoint Name</th>
+            <th>Time</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <script>
+      let data = [];
+
+      fetch(
+        "https://api.raceresult.com/292775/MRZHEBCS0R2X3WGCZLWHDFS46SLBA7FD"
+      )
+        .then((res) => res.json())
+        .then((json) => (data = json));
+
+      function convertToLocalTime(utcTime) {
+        if (!utcTime) return "-";
+        const date = new Date(utcTime);
+        date.setHours(date.getHours() + 2); // Add 2 hours for timezone adjustment
+        const hours = String(date.getUTCHours()).padStart(2, "0");
+        const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+        const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+        const milliseconds = String(date.getUTCMilliseconds()).padStart(3, "0");
+        return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+      }
+
+      function formatTime(raw) {
+        if (!raw) return "-";
+        try {
+          const date = new Date(raw);
+          const hours = String(date.getUTCHours()).padStart(2, "0");
+          const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+          const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+          const milliseconds = String(date.getUTCMilliseconds()).padStart(
+            3,
+            "0"
+          );
+          return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+        } catch {
+          return raw;
+        }
+      }
+
+      // Function to select text in the input field when it gains focus
+      document.getElementById("bib").addEventListener("focus", function () {
+        this.select(); // Select all the text in the input
+      });
+
+      // Function to trigger the search on pressing Enter and remove focus from the input field
+      document
+        .getElementById("bib")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault(); // Prevent default behavior (form submission, etc.)
+            trackRider(); // Run the trackRider function
+            this.blur(); // Remove focus from the input field
+          }
+        });
+
+      function trackRider() {
+        const bib = parseInt(document.getElementById("bib").value);
+        const rider = data.find((r) => r.ERZ_Number === bib);
+
+        if (!rider) {
+          alert("Rider not found");
+          return;
+        }
+
+        document.getElementById("riderInfo").style.display = "block";
+        document.getElementById("riderName").innerText = rider.DisplayNameERZ;
+        document.getElementById("startTime").innerText =
+          convertToLocalTime(rider.Start) || "-";
+        document.getElementById("totalTime").innerText = rider.ERZ_Time || "-";
+
+        const checkpointNames = [
+          "24MX Wasserleitung LIVE",
+          "Arena View",
+          "Rocky Racoon",
+          "Blakläder Zentrum am Berg LIVE",
+          "Drive Away",
+          "Wacher Neuson LIVE",
+          "Ludwig's Land",
+          "Repository LIVE",
+          "Crossing",
+          "Carl's Dinner Light LIVE",
+          "Double Fault LIVE",
+          "George Avenue LIVE",
+          "Carl's Dinner LIVE",
+          "Machine LIVE",
+          "Dornröschenwald",
+          "Devil's Kitchen",
+          "Elevator",
+          "Cuckoo's Nest",
+          "One Way Train",
+          "Chris' Stony Party LIVE",
+          "Udo's Playground LIVE",
+          "Burping Stones",
+          "Motorex Highway LIVE",
+          "Killing Leap LIVE",
+          "Dynamite LIVE",
+          "Lazy Noon",
+          "Ziel LIVE",
+        ];
+
+        let lastCP = 0;
+        const tbody = document.querySelector("#cpTable tbody");
+        tbody.innerHTML = "";
+
+        let lastCheckpointName = "";
+
+        for (let i = 1; i <= 27; i++) {
+          if (rider["CP" + i]) {
+            lastCP = i;
+            lastCheckpointName = checkpointNames[i - 1]; // Match checkpoint name by index
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td>CP${i}</td>
+        <td>${convertToLocalTime(rider["CP" + i])}</td>
+        <td>${lastCheckpointName}</td> <!-- New column with checkpoint name -->
+      `;
+            tbody.appendChild(row);
+          }
+        }
+
+        document.getElementById("lastCP").innerText = lastCP
+          ? `CP${lastCP}`
+          : "-";
+        document.getElementById("lastCheckpointName").innerText =
+          lastCheckpointName || "-";
+
+        // Generate progress bar segments based on rider's progress
+        const progressBarContainer = document.getElementById(
+          "progressBarContainer"
+        );
+        progressBarContainer.innerHTML = ""; // Clear existing segments
+
+        // Create segments for all 27 checkpoints
+        for (let i = 1; i <= 27; i++) {
+          const segment = document.createElement("div");
+          segment.classList.add("progress-bar-segment");
+
+          // Mark completed segments
+          if (i <= lastCP) {
+            segment.classList.remove("incomplete");
+          } else {
+            segment.classList.add("incomplete");
+          }
+
+          progressBarContainer.appendChild(segment);
+        }
+
+        const progressPercent = Math.round((lastCP / 27) * 100);
+        document.getElementById("progressPercent").innerText =
+          progressPercent + "%";
+      }
+    </script>
+  </body>
+</html>
