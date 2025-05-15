@@ -16,66 +16,180 @@
         margin-bottom: 10px;
       }
       table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 30px;
-      }
-      th,
-      td {
-        padding: 8px 12px;
-        border-bottom: 1px solid #ccc;
-        text-align: left;
-      }
-      th {
-        background: #222;
-        color: white;
-        position: sticky;
-        top: 0;
-      }
-      .highlight {
-        background: #d1fae5;
-      }
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  font-family: sans-serif;
+  font-size: 14px;
+}
+
+.table-container {
+  max-height: calc(10 * 41px);
+  overflow-y: auto;
+
+  /* Hide scrollbar (cross-browser) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.table-container::-webkit-scrollbar {
+  display: none;  /* Chrome, Safari, Opera */
+}
+
+#leaderboard {
+  margin: auto;
+  width: 90%;
+}
+
+
+th,
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+}
+
+th {
+  background: #222;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* Zebra striping */
+tbody tr:nth-child(odd) {
+  background-color: #f9fafb;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+/* Hover effect */
+tbody tr:hover {
+  background-color: #f3f4f6;
+}
+
+/* Highlighted row */
+.highlight {
+  background: #d1fae5 !important;
+}
+
+
       .cp-table td {
         text-align: center;
       }
+
       .badge {
-        font-size: 0.8em;
+        font-size: 1em;
         background: #4ade80;
-        color: #000;
+        color: #222;
+        font-weight: bold;
         padding: 2px 6px;
         border-radius: 4px;
       }
+
+.responsive-cp {
+  max-width: 100%;
+  padding: 0 10px;
+}
+
+.responsive-cp-grid-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.responsive-cp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+  max-width: calc(70px * 10 + 9 * 10px); /* 10 items + 9 gaps */
+  width: 100%;
+  gap: 10px;
+}
+
+      .cp-item {
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 3px;
+        text-align: center;
+        font-size: 1em;
+      }
+
+      .cp-label {
+        font-weight: bold;
+        font-size: 1em;
+        color: #f7f7f7;
+        background-color: #111;
+        padding-top: 3px;
+      }
+
+      .cp-value {
+        margin-top: 4px;
+        font-size: 1.3em;
+        color: #111;
+      }
+
+      .progress-wrapper {
+  background: #e5e7eb;
+  border-radius: 4px;
+  position: relative;
+  height: 18px;
+  width: 100%;
+  max-width: 300px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background: #4ade80;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.progress-label {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  line-height: 16px;
+  color: #111;
+  font-weight: bold;
+}
     </style>
   </head>
   <body>
     <h1>🏁 Erzbergrodeo Dashboard</h1>
 
     <section>
-      <h2>Top 10 Riders (by total time)</h2>
-      <table id="leaderboard">
-        <thead>
-          <tr>
-            <th>Pos</th>
-            <th>Bib</th>
-            <th>Name</th>
-            <th>Time</th>
-            <th>Current CP</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <h2 style="text-align: center;">Top 20 Riders (by total time)</h2>
+      <div class="table-container">
+        <table id="leaderboard">
+          <thead>
+            <tr>
+              <th>Pos</th>
+              <th>Bib</th>
+              <th>Name</th>
+              <th>Time</th>
+              <th>Progress</th>
+              <th>Current CP</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </section>
 
     <section>
-      <h2>Checkpoint Counts</h2>
-      <table class="cp-table" id="checkpointStats">
-        <thead>
-          <tr id="cp-header-row"></tr>
-        </thead>
-        <tbody>
-          <tr id="cp-count-row"></tr>
-        </tbody>
-      </table>
+      <h2 style="text-align: center;">Checkpoint Counts</h2>
+      <div class="responsive-cp" style="margin-left: auto; margin-right: auto; width: fit-content;">
+  <div class="responsive-cp-grid-wrapper">
+    <div class="responsive-cp-grid" id="checkpointStatsGrid">
+      <!-- JavaScript will populate this -->
+    </div>
+  </div>
+</div>
     </section>
 
     <script>
@@ -88,22 +202,17 @@
         return data;
       }
 
-      function getLastCheckpoint(rider) {
-        for (let i = 27; i >= 1; i--) {
-          if (rider["CP" + i]) return "CP" + i;
-        }
-        return "-";
-      }
-
-      function formatTime(str) {
-        return str?.replace(/^109:|^110:|^111:|^112:/, "") || "-";
+      function dToMs(t) {
+        const parts = t.split(":");
+        if (parts.length < 3) return Infinity;
+        const [h, m, s] = parts;
+        return +h * 3600 + +m * 60 + parseFloat(s.replace(",", "."));
       }
 
       function updateLeaderboard(data) {
         const tbody = document.querySelector("#leaderboard tbody");
         tbody.innerHTML = "";
 
-        // Add a new property "lastCPNum" to each rider
         data.forEach((r) => {
           r.lastCPNum = 0;
           for (let i = 27; i >= 1; i--) {
@@ -114,40 +223,46 @@
           }
         });
 
-        // Sort by lastCPNum descending, then by ERZ_Time ascending
+        const getBarColor = (percent) => {
+  if (percent >= 100) return '#22c55e'; // green-500 → ✅ "complete"
+  if (percent >= 80)  return '#84cc16'; // lime-500 → strong greenish-yellow
+  if (percent >= 60)  return '#facc15'; // yellow-400 → ⚠️ "decent progress"
+  if (percent >= 40)  return '#fb923c'; // orange-400 → 🟠 "halfway"
+  if (percent >= 20)  return '#f87171'; // red-400 → 🔴 "early"
+  return '#ef4444';                     // red-500 → ❗ "just started"
+};
+
         const sorted = data
           .filter((r) => r.lastCPNum > 0)
           .sort((a, b) => {
             if (b.lastCPNum !== a.lastCPNum) return b.lastCPNum - a.lastCPNum;
             return dToMs(a.ERZ_Time) - dToMs(b.ERZ_Time);
           })
-          .slice(0, 10);
+          .slice(0, 50);
 
         sorted.forEach((r, i) => {
           const tr = document.createElement("tr");
+          const percent = Math.round((r.lastCPNum / 27) * 100);
           tr.innerHTML = `
-      <td>${i + 1}</td>
-      <td>${r.ERZ_Number}</td>
-      <td>${r.DisplayNameERZ}</td>
-      <td>${r.ERZ_Time || "-"}</td>
-      <td><span class="badge">CP${r.lastCPNum}</span></td>
-    `;
+  <td>${i + 1}</td>
+  <td>${r.ERZ_Number}</td>
+  <td>${r.DisplayNameERZ}</td>
+  <td>${r.ERZ_Time || "-"}</td>
+  <td>
+    <div class="progress-wrapper">
+      <div class="progress-bar" style="width: ${percent}%; background: ${getBarColor(percent)};"></div>
+      <div class="progress-label">${percent}%</div>
+    </div>
+  </td>
+  <td><span class="badge">CP${r.lastCPNum}</span> - ${r.CheckpointName}</td>
+`;
           tbody.appendChild(tr);
         });
       }
 
-      function dToMs(t) {
-        const parts = t.split(":");
-        if (parts.length < 3) return Infinity;
-        const [h, m, s] = parts;
-        return +h * 3600 + +m * 60 + parseFloat(s.replace(",", "."));
-      }
-
       function updateCheckpointStats(data) {
-        const headerRow = document.getElementById("cp-header-row");
-        const countRow = document.getElementById("cp-count-row");
-        headerRow.innerHTML = "";
-        countRow.innerHTML = "";
+        const container = document.getElementById("checkpointStatsGrid");
+        container.innerHTML = "";
 
         const counts = Array(27).fill(0);
         data.forEach((r) => {
@@ -157,13 +272,13 @@
         });
 
         for (let i = 1; i <= 27; i++) {
-          const th = document.createElement("th");
-          th.textContent = "CP" + i;
-          headerRow.appendChild(th);
-
-          const td = document.createElement("td");
-          td.textContent = counts[i - 1];
-          countRow.appendChild(td);
+          const div = document.createElement("div");
+          div.className = "cp-item";
+          div.innerHTML = `
+            <div class="cp-label">CP${i}</div>
+            <div class="cp-value">${counts[i - 1]}</div>
+          `;
+          container.appendChild(div);
         }
       }
 
@@ -174,7 +289,7 @@
       }
 
       loadDashboard();
-      setInterval(loadDashboard, 3000); // refresh every 15s
+      setInterval(loadDashboard, 3000);
     </script>
   </body>
 </html>
