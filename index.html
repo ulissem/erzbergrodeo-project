@@ -230,12 +230,61 @@
   #checkpointRidersContainer::-webkit-scrollbar {
     display: none;                /* Chrome, Safari, Opera */
   }
+
+/* ========== Styling Button ========== */
+  .refreshBtn {
+  background-color: #2563eb; /* blue-600 */
+  color: white;
+  border: none;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.refreshBtn:hover {
+  background-color: #1e40af; /* darker blue */
+}
+
+.refreshBtn:active {
+  transform: scale(0.98);
+}
+
+.refreshBtn:disabled {
+  background-color: #9ca3af; /* gray-400 */
+  cursor: not-allowed;
+}
+
+.refreshSpinner {
+  margin-left: 12px;
+  font-size: 0.95rem;
+  color: #6b7280; /* gray-500 */
+  margin-top: 0.5em;
+  visibility: hidden;  /* hide but keep space */
+  display: block;      /* keep block layout */
+}
+
 </style>
 
   </head>
   <body>
     <h1>🏁 Erzbergrodeo Dashboard</h1>
 
+<div style="display: flex; align-items: center; gap: 1em; flex-wrap: wrap;">
+  <button id="refreshBtn" class="refreshBtn">🔄 Refresh</button>
+  <span id="autorefreshNotice" style="color: #6b7280; font-size: 0.95rem;">
+    🔁 This page automatically refreshes every 3 seconds.
+  </span>
+</div>
+
+<div>
+  <span id="refreshSpinner" class="refreshSpinner" style="display: none; margin-top: 0.5em; display: block;">
+    ⏳ Updating...
+  </span>
+</div>
     <section>
       <h2 style="text-align: center;">Top 20 Riders (by total time)</h2>
       <div class="table-container">
@@ -433,7 +482,42 @@ section.appendChild(title);
       }
 
       loadDashboard();
-      setInterval(loadDashboard, 1000);
+     const refreshBtn = document.getElementById("refreshBtn");
+const refreshSpinner = document.getElementById("refreshSpinner");
+
+let refreshTimeout;
+let lastManualRefreshTime = 0;
+const MIN_INTERVAL = 1000; // ms
+
+async function periodicUpdate() {
+  await loadDashboard();
+  refreshTimeout = setTimeout(periodicUpdate, 3000); // 5s interval
+}
+
+async function manualRefresh() {
+  const now = Date.now();
+  if (now - lastManualRefreshTime < MIN_INTERVAL) return;
+
+  lastManualRefreshTime = now;
+
+  // Show spinner and disable button
+  refreshSpinner.style.visibility = "visible";
+  refreshBtn.disabled = true;
+
+  clearTimeout(refreshTimeout);
+  await loadDashboard();
+
+  // Restart the periodic update (which schedules the next update)
+  periodicUpdate();
+
+  // Hide spinner and re-enable button
+  refreshSpinner.style.visibility = "hidden";
+  refreshBtn.disabled = false;
+}
+
+refreshBtn.addEventListener("click", manualRefresh);
+
+periodicUpdate();
     </script>
   </body>
 </html>
