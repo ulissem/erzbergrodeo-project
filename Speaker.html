@@ -102,10 +102,31 @@ tbody tr:hover {
 
 .responsive-cp-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-  max-width: calc(70px * 10 + 9 * 10px); /* 10 items + 9 gaps */
-  width: 100%;
+  grid-auto-flow: row;
+  grid-template-columns: repeat(auto-fill, 62px);
+  justify-content: start;
   gap: 10px;
+  max-width: calc(62px * 10 + 10px * 9); /* 10 items + 9 gaps */
+}
+
+#checkpointRidersContainer {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 15px 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 90vw;
+  margin: 20px auto 0 auto;
+  width: fit-content;
+  overflow-y: auto;
+  max-height: 400px;
+
+  /* Hide scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+#checkpointRidersContainer::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
       .cp-item {
@@ -115,6 +136,7 @@ tbody tr:hover {
         padding: 3px;
         text-align: center;
         font-size: 1em;
+        width: 62px;
       }
 
       .cp-label {
@@ -123,6 +145,15 @@ tbody tr:hover {
         color: #f7f7f7;
         background-color: #111;
         padding-top: 3px;
+      }
+
+      .cp-label-rider {
+        font-weight: bold;
+        font-size: 0.7em;
+        color: #f7f7f7;
+        background-color: #A81815;
+        padding-top: 3px;
+        padding-bottom: 3px;
       }
 
       .cp-value {
@@ -157,6 +188,17 @@ tbody tr:hover {
   color: #111;
   font-weight: bold;
 }
+
+h3 {
+  position: sticky;
+  top: -15px;
+  background: white; /* or the background color of your container */
+  z-index: 10; /* keep it above other content */
+  padding: 10px 0; /* optional spacing */
+  border-bottom: 1px solid #ccc; /* optional visual separation */
+}
+
+
     </style>
   </head>
   <body>
@@ -192,9 +234,16 @@ tbody tr:hover {
 </div>
     </section>
 
+    <section>
+  <h2 style="text-align: center;">Riders per Checkpoint</h2>
+  <div id="checkpointRidersContainer" class="responsive-cp">
+    <!-- JavaScript will populate this -->
+  </div>
+</section>
+
     <script>
       const API_URL =
-        "https://api.raceresult.com/292775/MRZHEBCS0R2X3WGCZLWHDFS46SLBA7FD";
+        "https://api.raceresult.com/341508/MRZHEBCS0R2X3WGCZLWHDFS46SLBA7FD";
 
       async function fetchData() {
         const res = await fetch(API_URL);
@@ -282,10 +331,70 @@ tbody tr:hover {
         }
       }
 
+      function updateCheckpointRiders(data) {
+  const container = document.getElementById("checkpointRidersContainer");
+  container.innerHTML = "";
+
+  const cpMap = {};
+
+  data.forEach((r) => {
+    let lastCP = 0;
+    let name = "";
+    for (let i = 27; i >= 1; i--) {
+      if (r["CP" + i]) {
+        lastCP = i;
+        name = r.CheckpointName || "";
+        break;
+      }
+    }
+
+    if (!lastCP) return;
+
+    if (!cpMap[lastCP]) cpMap[lastCP] = { name, riders: [] };
+    cpMap[lastCP].riders.push(r.ERZ_Number);
+  });
+
+  // Sort CPs descending
+  const sortedCPs = Object.keys(cpMap).sort((a, b) => b - a);
+
+  sortedCPs.forEach((cpNum) => {
+    const { name, riders } = cpMap[cpNum];
+    const section = document.createElement("div");
+    section.style.marginBottom = "20px";
+
+    const title = document.createElement("h3");
+title.style.textAlign = "center";
+title.textContent = `CP${cpNum} - ${name} (Count: ${riders.length})`;
+section.appendChild(title);
+
+    const gridWrapper = document.createElement("div");
+    gridWrapper.className = "responsive-cp-grid-wrapper";
+
+    const grid = document.createElement("div");
+    grid.className = "responsive-cp-grid";
+
+    riders.forEach((number) => {
+      const item = document.createElement("div");
+      item.className = "cp-item";
+      item.innerHTML = `
+        <div class="cp-label-rider">RIDER</div>
+        <div class="cp-value">${number}</div>
+      `;
+      grid.appendChild(item);
+    });
+
+    gridWrapper.appendChild(grid);
+    section.appendChild(gridWrapper);
+    container.appendChild(section);
+  });
+}
+
+
       async function loadDashboard() {
         const data = await fetchData();
         updateLeaderboard(data);
         updateCheckpointStats(data);
+        updateCheckpointRiders(data);
       }
 
       loadDashboard();
