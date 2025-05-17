@@ -57,9 +57,11 @@ function updateLeaderboard(data) {
     <div class="progress-wrapper">
       <div class="progress-bar" style="width: ${percent}%; background: ${getBarColor(
       percent
-    )};"></div>
+    )};">
+      </div>
       <div class="progress-label">${percent}%</div>
     </div>
+<div class="progress-text">${percent}%</div>
   </td>
   <td>
   <span class="badge mobile-badge">CP${

@@ -68,7 +68,7 @@ table {
 
 @media (max-width: 800px) {
   #leaderboard {
-    font-size: 0.7rem; /* Smaller text for smaller screens */
+    font-size: 0.6rem; /* Smaller text for smaller screens */
   }
 }
 
@@ -168,6 +168,24 @@ tbody tr:hover {
   line-height: 16px;
   color: #111;
   font-weight: bold;
+}
+
+.progress-text {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .progress-wrapper {
+    display: none;
+  }
+
+  .progress-text {
+    display: block;
+    font-weight: bold;
+    text-align: center;
+    font-size: 0.9em;
+    color: #333;
+  }
 }
 
 /* ========== Checkpoint Grid Styles ========== */
