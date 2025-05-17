@@ -4,520 +4,71 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Erzbergrodeo Speaker Dashboard</title>
-    <style>
-  /* ========== Global Styles ========== */
-  body {
-    font-family: sans-serif;
-    background: #f7f7f7;
-    margin: 0;
-    padding: 20px;
-  }
-
-  h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-
-  h3 {
-    position: sticky;
-    top: -15px;
-    background: white; /* keep heading visible during scroll */
-    z-index: 10;
-    padding: 10px 0;
-    border-bottom: 1px solid #ccc;
-  }
-
-  /* ========== Table Styles ========== */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 30px;
-    font-size: 14px;
-  }
-
-  .table-container {
-    max-height: calc(10 * 41px);
-    overflow-y: auto;
-
-    /* Hide scrollbars cross-browser */
-    scrollbar-width: none;        /* Firefox */
-    -ms-overflow-style: none;     /* IE and Edge */
-  }
-
-  .table-container::-webkit-scrollbar {
-    display: none;                /* Chrome, Safari, Opera */
-  }
-
-  #leaderboard {
-    margin: auto;
-    width: 90%;
-    font-size: 1rem;
-  }
-
-  @media (max-width: 800px) {
-    #leaderboard {
-      font-size: 0.7rem; /* Smaller text for smaller screens */
-    }
-  }
-
-  th, td {
-    padding: 10px 14px;
-    border-bottom: 1px solid #e5e7eb;
-    text-align: left;
-  }
-
-  th {
-    background: #222;
-    color: white;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-  }
-
-  /* Row styling */
-  tbody tr:nth-child(odd) {
-    background-color: #f9fafb;
-  }
-
-  tbody tr:nth-child(even) {
-    background-color: #ffffff;
-  }
-
-  tbody tr:hover {
-    background-color: #f3f4f6;
-  }
-
-  .highlight {
-    background: #d1fae5 !important; /* Highlighted row */
-  }
-
-  /* Center text in cp-table cells */
-  .cp-table td {
-    text-align: center;
-  }
-
-  /* ========== Badge Styles ========== */
-  .badge {
-    font-size: 1em;
-    background: #4ade80;
-    color: #222;
-    font-weight: bold;
-    padding: 2px 6px;
-    border-radius: 4px;
-  }
-
-  /* Mobile badge spacing adjustment */
-  .mobile-badge {
-    margin-bottom: 0;
-  }
-
-  @media screen and (max-width: 600px) {
-    .mobile-badge {
-      display: inline-block;
-      margin-bottom: 4px;
-    }
-  }
-
-  /* Control line break for checkpoint name */
-  .mobile-break {
-    display: none;
-  }
-
-  @media screen and (max-width: 600px) {
-    .mobile-break {
-      display: inline;
-    }
-  }
-
-  /* ========== Progress Bar ========== */
-  .progress-wrapper {
-    background: #e5e7eb;
-    border-radius: 4px;
-    position: relative;
-    height: 18px;
-    width: 100%;
-    max-width: 300px;
-    overflow: hidden;
-  }
-
-  .progress-bar {
-    background: #4ade80;
-    height: 100%;
-    transition: width 0.3s ease;
-  }
-
-  .progress-label {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 11px;
-    line-height: 16px;
-    color: #111;
-    font-weight: bold;
-  }
-
-  /* ========== Checkpoint Grid Styles ========== */
-  .responsive-cp {
-    max-width: 100%;
-    padding: 0 10px;
-  }
-
-  .responsive-cp-grid-wrapper {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-  }
-
-  .responsive-cp-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(62px, 62px));
-    gap: 10px;
-    width: 100%;
-    max-width: calc(62px * 14 + 13px * 13);
-    justify-content: start;
-  }
-
-  .cp-item {
-    background: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 3px;
-    text-align: center;
-    font-size: 1em;
-    width: 62px;
-  }
-
-  .cp-label {
-    font-weight: bold;
-    font-size: 1em;
-    color: #f7f7f7;
-    background-color: #111;
-    padding-top: 3px;
-  }
-
-  .cp-label-rider {
-    font-weight: bold;
-    font-size: 0.7em;
-    color: #f7f7f7;
-    background-color: #A81815;
-    padding-top: 3px;
-    padding-bottom: 3px;
-  }
-
-  .cp-value {
-    margin-top: 4px;
-    font-size: 1.3em;
-    color: #111;
-  }
-
-  /* ========== Container for Riders ========== */
-  #checkpointRidersContainer {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 15px 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    max-width: 80vw;
-    margin: 20px auto 0 auto;
-    width: auto;
-    overflow-y: auto;
-    max-height: 400px;
-
-    scrollbar-width: none;        /* Firefox */
-    -ms-overflow-style: none;     /* IE and Edge */
-  }
-
-  #checkpointRidersContainer::-webkit-scrollbar {
-    display: none;                /* Chrome, Safari, Opera */
-  }
-
-/* ========== Styling Button ========== */
-  .refreshBtn {
-  background-color: #2563eb; /* blue-600 */
-  color: white;
-  border: none;
-  padding: 0.6em 1.2em;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
-  font-weight: 600;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.refreshBtn:hover {
-  background-color: #1e40af; /* darker blue */
-}
-
-.refreshBtn:active {
-  transform: scale(0.98);
-}
-
-.refreshBtn:disabled {
-  background-color: #9ca3af; /* gray-400 */
-  cursor: not-allowed;
-}
-
-.refreshSpinner {
-  margin-left: 12px;
-  font-size: 0.95rem;
-  color: #6b7280; /* gray-500 */
-  margin-top: 0.5em;
-  visibility: hidden;  /* hide but keep space */
-  display: block;      /* keep block layout */
-}
-
-</style>
-
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <h1>🏁 Erzbergrodeo Dashboard</h1>
 
-<div style="display: flex; align-items: center; gap: 1em; flex-wrap: wrap;">
-  <button id="refreshBtn" class="refreshBtn">🔄 Refresh</button>
-  <span id="autorefreshNotice" style="color: #6b7280; font-size: 0.95rem;">
-    🔁 This page automatically refreshes every 3 seconds.
-  </span>
-</div>
+    <div style="display: flex; align-items: center; gap: 1em; flex-wrap: wrap">
+      <button id="refreshBtn" class="refreshBtn">🔄 Refresh</button>
+      <span id="autorefreshNotice" style="color: #6b7280; font-size: 0.95rem">
+        🔁 This page automatically refreshes every 3 seconds.
+      </span>
+    </div>
 
-<div>
-  <span id="refreshSpinner" class="refreshSpinner" style="display: none; margin-top: 0.5em; display: block;">
-    ⏳ Updating...
-  </span>
-</div>
+    <div>
+      <span
+        id="refreshSpinner"
+        class="refreshSpinner"
+        style="display: none; margin-top: 0.5em; display: block"
+      >
+        ⏳ Updating...
+      </span>
+    </div>
     <section>
-      <h2 style="text-align: center;">Top 20 Riders (by total time)</h2>
-      <div class="table-container">
-        <table id="leaderboard">
-          <thead>
-            <tr>
-              <th>Pos</th>
-              <th>Bib</th>
-              <th>Name</th>
-              <th>Time</th>
-              <th>Progress</th>
-              <th>Current CP</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <h2 style="text-align: center">Top 20 Riders (by total time)</h2>
+      <div id="table-wrap">
+        <div class="table-container">
+          <table id="leaderboard">
+            <thead>
+              <tr>
+                <th>Pos</th>
+                <th>Bib</th>
+                <th>Name</th>
+                <th>Time</th>
+                <th>Progress</th>
+                <th>Current CP</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
     </section>
 
     <section>
-      <h2 style="text-align: center;">Checkpoint Counts</h2>
-      <div class="responsive-cp" style="margin-left: auto; margin-right: auto; width: fit-content;">
-  <div class="responsive-cp-grid-wrapper">
-    <div class="responsive-cp-grid" id="checkpointStatsGrid">
-      <!-- JavaScript will populate this -->
-    </div>
-  </div>
-</div>
+      <h2 style="text-align: center">Checkpoint Counts</h2>
+      <div
+        class="responsive-cp"
+        style="margin-left: auto; margin-right: auto; width: fit-content"
+      >
+        <div class="responsive-cp-grid-wrapper">
+          <div class="responsive-cp-grid" id="checkpointStatsGrid">
+            <!-- JavaScript will populate this -->
+          </div>
+        </div>
+      </div>
     </section>
 
     <section>
-  <h2 style="text-align: center;">Riders per Checkpoint</h2>
-  <div id="checkpointRidersContainer" class="responsive-cp">
-    <!-- JavaScript will populate this -->
-  </div>
-</section>
+      <h2 style="text-align: center">Riders per Checkpoint</h2>
+      <div id="checkpointRidersContainer" class="responsive-cp">
+        <!-- JavaScript will populate this -->
+      </div>
+    </section>
 
-    <script>
-      const API_URL =
-        "https://api.raceresult.com/341508/MRZHEBCS0R2X3WGCZLWHDFS46SLBA7FD";
+    <script src="myscript.js"></script>
 
-      async function fetchData() {
-        const res = await fetch(API_URL);
-        const data = await res.json();
-        return data;
-      }
-
-      function dToMs(t) {
-        const parts = t.split(":");
-        if (parts.length < 3) return Infinity;
-        const [h, m, s] = parts;
-        return +h * 3600 + +m * 60 + parseFloat(s.replace(",", "."));
-      }
-
-      function updateLeaderboard(data) {
-        const tbody = document.querySelector("#leaderboard tbody");
-        tbody.innerHTML = "";
-
-        data.forEach((r) => {
-          r.lastCPNum = 0;
-          for (let i = 27; i >= 1; i--) {
-            if (r["CP" + i]) {
-              r.lastCPNum = i;
-              break;
-            }
-          }
-        });
-
-        const getBarColor = (percent) => {
-  if (percent >= 100) return '#22c55e'; // green-500 → ✅ "complete"
-  if (percent >= 80)  return '#84cc16'; // lime-500 → strong greenish-yellow
-  if (percent >= 60)  return '#facc15'; // yellow-400 → ⚠️ "decent progress"
-  if (percent >= 40)  return '#fb923c'; // orange-400 → 🟠 "halfway"
-  if (percent >= 20)  return '#f87171'; // red-400 → 🔴 "early"
-  return '#ef4444';                     // red-500 → ❗ "just started"
-};
-
-        const sorted = data
-          .filter((r) => r.lastCPNum > 0)
-          .sort((a, b) => {
-            if (b.lastCPNum !== a.lastCPNum) return b.lastCPNum - a.lastCPNum;
-            return dToMs(a.ERZ_Time) - dToMs(b.ERZ_Time);
-          })
-          .slice(0, 50);
-
-        sorted.forEach((r, i) => {
-          const tr = document.createElement("tr");
-          const percent = Math.round((r.lastCPNum / 27) * 100);
-          tr.innerHTML = `
-  <td>${i + 1}</td>
-  <td>${r.ERZ_Number}</td>
-  <td>${r.DisplayNameERZ}</td>
-  <td>${r.ERZ_Time || "-"}</td>
-  <td>
-    <div class="progress-wrapper">
-      <div class="progress-bar" style="width: ${percent}%; background: ${getBarColor(percent)};"></div>
-      <div class="progress-label">${percent}%</div>
-    </div>
-  </td>
-  <td>
-  <span class="badge mobile-badge">CP${r.lastCPNum}</span><br class="mobile-break">
-  ${r.CheckpointName}
-</td>
-`;
-          tbody.appendChild(tr);
-        });
-      }
-
-      function updateCheckpointStats(data) {
-        const container = document.getElementById("checkpointStatsGrid");
-        container.innerHTML = "";
-
-        const counts = Array(27).fill(0);
-        data.forEach((r) => {
-          for (let i = 1; i <= 27; i++) {
-            if (r["CP" + i]) counts[i - 1]++;
-          }
-        });
-
-        for (let i = 1; i <= 27; i++) {
-          const div = document.createElement("div");
-          div.className = "cp-item";
-          div.innerHTML = `
-            <div class="cp-label">CP${i}</div>
-            <div class="cp-value">${counts[i - 1]}</div>
-          `;
-          container.appendChild(div);
-        }
-      }
-
-      function updateCheckpointRiders(data) {
-  const container = document.getElementById("checkpointRidersContainer");
-  container.innerHTML = "";
-
-  const cpMap = {};
-
-  data.forEach((r) => {
-    let lastCP = 0;
-    let name = "";
-    for (let i = 27; i >= 1; i--) {
-      if (r["CP" + i]) {
-        lastCP = i;
-        name = r.CheckpointName || "";
-        break;
-      }
-    }
-
-    if (!lastCP) return;
-
-    if (!cpMap[lastCP]) cpMap[lastCP] = { name, riders: [] };
-    cpMap[lastCP].riders.push(r.ERZ_Number);
-  });
-
-  // Sort CPs descending
-  const sortedCPs = Object.keys(cpMap).sort((a, b) => b - a);
-
-  sortedCPs.forEach((cpNum) => {
-    const { name, riders } = cpMap[cpNum];
-    const section = document.createElement("div");
-    section.style.marginBottom = "20px";
-
-    const title = document.createElement("h3");
-title.style.textAlign = "center";
-title.textContent = `CP${cpNum} - ${name} (Count: ${riders.length})`;
-section.appendChild(title);
-
-    const gridWrapper = document.createElement("div");
-    gridWrapper.className = "responsive-cp-grid-wrapper";
-
-    const grid = document.createElement("div");
-    grid.className = "responsive-cp-grid";
-
-    riders.forEach((number) => {
-      const item = document.createElement("div");
-      item.className = "cp-item";
-      item.innerHTML = `
-        <div class="cp-label-rider">RIDER</div>
-        <div class="cp-value">${number}</div>
-      `;
-      grid.appendChild(item);
-    });
-
-    gridWrapper.appendChild(grid);
-    section.appendChild(gridWrapper);
-    container.appendChild(section);
-  });
-}
-
-
-      async function loadDashboard() {
-        const data = await fetchData();
-        updateLeaderboard(data);
-        updateCheckpointStats(data);
-        updateCheckpointRiders(data);
-      }
-
-      loadDashboard();
-     const refreshBtn = document.getElementById("refreshBtn");
-const refreshSpinner = document.getElementById("refreshSpinner");
-
-let refreshTimeout;
-let lastManualRefreshTime = 0;
-const MIN_INTERVAL = 1000; // ms
-
-async function periodicUpdate() {
-  await loadDashboard();
-  refreshTimeout = setTimeout(periodicUpdate, 3000); // 5s interval
-}
-
-async function manualRefresh() {
-  const now = Date.now();
-  if (now - lastManualRefreshTime < MIN_INTERVAL) return;
-
-  lastManualRefreshTime = now;
-
-  // Show spinner and disable button
-  refreshSpinner.style.visibility = "visible";
-  refreshBtn.disabled = true;
-
-  clearTimeout(refreshTimeout);
-  await loadDashboard();
-
-  // Restart the periodic update (which schedules the next update)
-  periodicUpdate();
-
-  // Hide spinner and re-enable button
-  refreshSpinner.style.visibility = "hidden";
-  refreshBtn.disabled = false;
-}
-
-refreshBtn.addEventListener("click", manualRefresh);
-
-periodicUpdate();
-    </script>
+    <div id="riderTooltip" class="tooltip"></div>
   </body>
 </html>
