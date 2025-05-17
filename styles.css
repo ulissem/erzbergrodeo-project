@@ -312,3 +312,9 @@ tbody tr:hover {
   opacity: 0;
   transition: opacity 0.1s ease-in-out;
 }
+
+@media (max-width: 600px) {
+  .flag-icon {
+    display: none;
+  }
+}

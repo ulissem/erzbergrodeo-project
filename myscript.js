@@ -51,7 +51,16 @@ function updateLeaderboard(data) {
     tr.innerHTML = `
   <td>${i + 1}</td>
   <td>${r.ERZ_Number}</td>
-  <td>${r.DisplayNameERZ}</td>
+  <td>
+    <div><strong>${r.DisplayNameERZ}</strong></div>
+    <div style="font-size: 0.85em; color: #555;">
+      <img src="https://flagcdn.com/16x12/${(r.Nation || "").toLowerCase()}.png"
+        alt="${r.Nation}" 
+        class="flag-icon"
+        style="vertical-align: middle; margin-right: 4px; width: 16px; height: 12px;" />
+      ${r.Nation || "N/A"} &middot; ${r.Bike || "Unknown"}
+    </div>
+  </td>
   <td>${r.ERZ_Time || "-"}</td>
   <td>
     <div class="progress-wrapper">
@@ -61,7 +70,7 @@ function updateLeaderboard(data) {
       </div>
       <div class="progress-label">${percent}%</div>
     </div>
-<div class="progress-text">${percent}%</div>
+    <div class="progress-text">${percent}%</div>
   </td>
   <td>
   <span class="badge mobile-badge">CP${
@@ -128,6 +137,8 @@ function updateCheckpointRiders(data) {
       number: r.ERZ_Number,
       name: r.DisplayNameERZ,
       lastCPTime: timeFormatted,
+      nation: r.Nation || "N/A",
+      bike: r.Bike || "Unknown",
     });
   });
 
@@ -151,7 +162,7 @@ function updateCheckpointRiders(data) {
     grid.className = "responsive-cp-grid";
 
     riders.forEach((rider) => {
-      const { number, name, lastCPTime } = rider;
+      const { number, name, lastCPTime, nation, bike } = rider;
 
       const item = document.createElement("div");
       item.className = "cp-item";
@@ -162,10 +173,17 @@ function updateCheckpointRiders(data) {
 
       const tooltip = document.getElementById("riderTooltip");
 
+      const nationText =
+        nation && nation !== "N/A" ? ` &middot; ${nation}` : "";
+
       // Desktop hover
       item.addEventListener("mouseenter", (e) => {
         if (window.matchMedia("(hover: hover)").matches) {
-          tooltip.innerHTML = `<strong>${name}</strong><br>Time at CP: ${lastCPTime}`;
+          tooltip.innerHTML = `
+        <strong>${name}${nationText}</strong><br>
+        Time at CP: ${lastCPTime}<br>
+        ${bike}
+      `;
           tooltip.style.opacity = "1";
           tooltip.style.left = e.pageX + 10 + "px";
           tooltip.style.top = e.pageY + 10 + "px";
@@ -187,7 +205,11 @@ function updateCheckpointRiders(data) {
       item.addEventListener("click", (e) => {
         if (!window.matchMedia("(hover: hover)").matches) {
           e.stopPropagation();
-          tooltip.innerHTML = `<strong>${name}</strong><br>Time at CP: ${lastCPTime}`;
+          tooltip.innerHTML = `
+        <strong>${name}${nationText}</strong><br>
+        Time at CP: ${lastCPTime}<br>
+        ${bike}
+      `;
           tooltip.style.opacity = "1";
           tooltip.style.left = e.pageX + 10 + "px";
           tooltip.style.top = e.pageY + 10 + "px";
