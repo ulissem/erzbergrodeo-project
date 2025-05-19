@@ -14,10 +14,16 @@ h1 {
 h3 {
   position: sticky;
   top: -15px;
-  background: white; /* keep heading visible during scroll */
+  background: linear-gradient(to right, #ffffff, #f9f9f9);
   z-index: 10;
-  padding: 10px 0;
-  border-bottom: 1px solid #ccc;
+  padding: 12px 20px;
+  border-bottom: 2px solid #ddd;
+  font-size: 1.4rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05), inset 0 -2px 0 rgba(0, 0, 0, 0.03);
+  border-radius: 6px;
+  color: #333;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 /* ========== Table Styles ========== */
@@ -31,7 +37,7 @@ h3 {
   margin: 20px auto 20px auto;
   width: auto;
   overflow-y: auto;
-  max-height: 450px;
+  max-height: 600px;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
 }
@@ -48,7 +54,7 @@ table {
 }
 
 .table-container {
-  max-height: calc(11 * 40px);
+  max-height: calc(11 * 50px);
   overflow-y: auto;
 
   /* Hide scrollbars cross-browser */
@@ -64,6 +70,10 @@ table {
   margin: auto;
   width: 100%;
   font-size: 1rem;
+}
+
+.second-line {
+  color: #555;
 }
 
 @media (max-width: 800px) {
@@ -115,7 +125,7 @@ tbody tr:hover {
   background: black;
   color: white;
   font-weight: bold;
-  padding: 2px 6px;
+  padding: 4px 6px 2px 6px;
   border-radius: 4px;
 }
 
@@ -253,7 +263,7 @@ tbody tr:hover {
   margin: 20px auto 0 auto;
   width: auto;
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 500px;
 
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
@@ -317,4 +327,59 @@ tbody tr:hover {
   .flag-icon {
     display: none;
   }
+}
+
+/* ========== DARK MODE ========== */
+body.dark {
+  background: #121212;
+  color: #e0e0e0;
+}
+
+.dark h3 {
+  background: #1e1e1e;
+  color: #f0f0f0;
+  border-bottom: 1px solid #333;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+  text-shadow: none;
+}
+
+body.dark #table-wrap,
+body.dark #checkpointRidersContainer {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+}
+
+body.dark th,
+body.dark td {
+  border-bottom: 1px solid #333;
+}
+
+body.dark th {
+  background: #2c2c2c;
+  color: #f0f0f0;
+}
+
+body.dark tbody tr:nth-child(odd) {
+  background-color: #1a1a1a;
+}
+
+body.dark tbody tr:nth-child(even) {
+  background-color: #161616;
+}
+
+body.dark tbody tr:hover {
+  background-color: #2a2a2a;
+}
+
+body.dark .highlight {
+  background: #14532d !important;
+}
+
+body.dark .second-line {
+  color: #c5c5c5;
+}
+
+body.dark .badge {
+  background: #fff;
+  color: #333;
 }

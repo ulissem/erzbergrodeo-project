@@ -53,13 +53,13 @@ function updateLeaderboard(data) {
   <td>${r.ERZ_Number}</td>
   <td>
     <div><strong>${r.DisplayNameERZ}</strong></div>
-    <div style="font-size: 0.85em; color: #555;">
-      <img src="https://flagcdn.com/16x12/${(r.Nation || "").toLowerCase()}.png"
-        alt="${r.Nation}" 
-        class="flag-icon"
-        style="vertical-align: middle; margin-right: 4px; width: 16px; height: 12px;" />
-      ${r.Nation || "N/A"} &middot; ${r.Bike || "Unknown"}
-    </div>
+    <div class="second-line" style="font-size: 0.85em;">
+  <img src="https://flagcdn.com/16x12/${(r.Nation || "").toLowerCase()}.png"
+    alt="${r.Nation}" 
+    class="flag-icon"
+    style="vertical-align: middle; margin-right: 4px; width: 16px; height: 12px;" />
+  ${r.Nation || "N/A"} &middot; ${r.Bike || "Unknown"}
+</div>
   </td>
   <td>${r.ERZ_Time || "-"}</td>
   <td>
@@ -271,6 +271,19 @@ async function manualRefresh() {
   refreshSpinner.style.visibility = "hidden";
   refreshBtn.disabled = false;
 }
+
+const toggleBtn = document.getElementById("themeToggle");
+
+// Restore last theme
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+}
+
+toggleBtn.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  const isDark = document.body.classList.contains("dark");
+  localStorage.setItem("theme", isDark ? "dark" : "light");
+});
 
 refreshBtn.addEventListener("click", manualRefresh);
 
