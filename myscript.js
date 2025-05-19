@@ -272,16 +272,18 @@ async function manualRefresh() {
   refreshBtn.disabled = false;
 }
 
-const toggleBtn = document.getElementById("themeToggle");
+const prefersDark = localStorage.getItem("theme") === "dark";
+const checkbox = document.getElementById("checkbox");
 
-// Restore last theme
-if (localStorage.getItem("theme") === "dark") {
+// Set initial theme on load
+if (prefersDark) {
   document.body.classList.add("dark");
+  checkbox.checked = true;
 }
 
-toggleBtn.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  const isDark = document.body.classList.contains("dark");
+checkbox.addEventListener("change", (event) => {
+  const isDark = event.target.checked;
+  document.body.classList.toggle("dark", isDark);
   localStorage.setItem("theme", isDark ? "dark" : "light");
 });
 
