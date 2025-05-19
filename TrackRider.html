@@ -221,6 +221,92 @@
       .cp-table tr:last-child td {
         border-bottom: none;
       }
+
+      @media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .track-link {
+    display: block;
+    margin: 1rem auto;
+    text-align: center;
+  }
+
+  .rider-info {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .rider-info h3 {
+    font-size: 1.5rem;
+  }
+
+  .info-table {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .right-side div {
+    font-size: 1.8rem;
+  }
+
+  input {
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
+  }
+
+  button {
+    width: 100%;
+    max-width: 300px;
+    margin-top: 0.5rem;
+  }
+
+  .cp-table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .cp-table th,
+  .cp-table td {
+    white-space: nowrap;
+    padding: 10px;
+    font-size: 0.7rem;
+  }
+
+  .progress-bar-container {
+    height: 15px;
+  }
+
+  .cp-table td:first-child {
+        font-size: 0.9rem;
+        font-weight: bold;
+      }
+
+  .cp-table td:nth-child(1) {
+        font-size: 0.7rem
+      }
+
+      .cp-table td:nth-child(2) {
+        font-size: 0.7rem
+      }
+
+      .cp-table td:nth-child(3) {
+        font-size: 0.7rem
+      }
+
+      .cp-table td:nth-child(4) {
+        font-size: 0.7rem
+      }
+}
+
     </style>
   </head>
   <h2>📍 Rider Tracker</h2>
