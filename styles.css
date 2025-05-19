@@ -286,6 +286,10 @@ tbody tr:hover {
     font-size: 0.9em;
     color: #333;
   }
+
+  body.dark .progress-text {
+    color: #e0e0e0;
+  }
 }
 
 /* ========== Checkpoint Grid Styles ========== */
