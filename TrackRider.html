@@ -19,6 +19,22 @@
         font-size: 2rem;
       }
 
+ .track-link {
+  margin-left: 20px;
+  font-weight: 500;
+  text-decoration: none;
+  background: #FFCC01;
+  color: #2B2B2B;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.track-link:hover {
+  background: #ffaf01;
+}
+
+
       label {
         font-size: 1.1rem;
         color: #ffcc00;
@@ -174,6 +190,12 @@
       }
 
       .cp-table td:nth-child(3) {
+        color: #ddd;
+        font-weight: 400;
+        font-style: italic;
+      }
+
+      .cp-table td:nth-child(4) {
         color: a8a8a8;
         font-weight: 400;
       }
@@ -201,8 +223,10 @@
       }
     </style>
   </head>
-  <body>
-    <h2>Rider Tracker</h2>
+  <h2>📍 Rider Tracker</h2>
+    <p>
+      <a href="index.html" class="track-link">← Back to Dashboard</a>
+    </p>
     <label for="bib">Enter Bib #: </label>
     <input type="number" id="bib" placeholder="Enter Bib Number" />
     <button id="trackButton">Track Rider</button>
@@ -240,8 +264,9 @@
         <thead>
           <tr>
             <th>CP</th>
+            <th>Crossing Time</th>
+            <th>Race Time</th>
             <th>Checkpoint Name</th>
-            <th>Time</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -252,7 +277,7 @@
       let data = [];
 
       fetch(
-        "https://api.raceresult.com/341508/MRZHEBCS0R2X3WGCZLWHDFS46SLBA7FD"
+        "https://api.raceresult.com/341508/8VWOJLQS8MB2EEUUPFH901C8IBIIA67K"
       )
         .then((res) => res.json())
         .then((json) => (data = json));
@@ -353,17 +378,40 @@
         let lastCheckpointName = "";
 
         for (let i = 1; i <= 27; i++) {
-          if (rider["CP" + i]) {
+          const cpTime = rider["CP" + i];
+          const startTime = rider.Start;
+
+          if (cpTime) {
             lastCP = i;
-            lastCheckpointName = checkpointNames[i - 1]; // Match checkpoint name by index
+            lastCheckpointName = checkpointNames[i - 1];
+
+            const raceTimeMs = new Date(cpTime) - new Date(startTime);
+            const raceTimeFormatted = formatRaceTime(raceTimeMs);
+
             const row = document.createElement("tr");
             row.innerHTML = `
-        <td>CP${i}</td>
-        <td>${convertToLocalTime(rider["CP" + i])}</td>
-        <td>${lastCheckpointName}</td> <!-- New column with checkpoint name -->
-      `;
+      <td>CP${i}</td>
+      <td>${convertToLocalTime(cpTime)}</td>
+      <td>${raceTimeFormatted}</td> 
+      <td>${lastCheckpointName}</td>
+    `;
             tbody.appendChild(row);
           }
+        }
+
+        // Format milliseconds into hh:mm:ss.kkk
+        function formatRaceTime(ms) {
+          const totalSeconds = Math.floor(ms / 1000);
+          const milliseconds = String(ms % 1000).padStart(3, "0");
+          const hours = String(Math.floor(totalSeconds / 3600)).padStart(
+            2,
+            "0"
+          );
+          const minutes = String(
+            Math.floor((totalSeconds % 3600) / 60)
+          ).padStart(2, "0");
+          const seconds = String(totalSeconds % 60).padStart(2, "0");
+          return `${hours}:${minutes}:${seconds}.${milliseconds}`;
         }
 
         document.getElementById("lastCP").innerText = lastCP

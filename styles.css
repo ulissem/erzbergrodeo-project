@@ -116,6 +116,22 @@ h3 {
   order: 3;
 }
 
+/* ========== Track Rider ========== */
+.track-link {
+  margin-left: 20px;
+  font-weight: 500;
+  text-decoration: none;
+  background: #007bff;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.track-link:hover {
+  background: #0056b3;
+}
+
 /* ========== Table Styles ========== */
 
 #table-wrap {
