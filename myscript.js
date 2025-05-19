@@ -238,17 +238,27 @@ async function loadDashboard() {
   updateCheckpointRiders(data);
 }
 
-loadDashboard();
-const refreshBtn = document.getElementById("refreshBtn");
-const refreshSpinner = document.getElementById("refreshSpinner");
-
+let isLoading = false;
 let refreshTimeout;
 let lastManualRefreshTime = 0;
-const MIN_INTERVAL = 1000; // ms
+const MIN_INTERVAL = 1000;
+
+async function loadDashboardSafe() {
+  if (isLoading) return;
+  isLoading = true;
+
+  try {
+    await loadDashboard();
+  } catch (e) {
+    console.error("Load error:", e);
+  } finally {
+    isLoading = false;
+  }
+}
 
 async function periodicUpdate() {
-  await loadDashboard();
-  refreshTimeout = setTimeout(periodicUpdate, 3000); // 5s interval
+  refreshTimeout = setTimeout(periodicUpdate, 10000); // Schedule first
+  await loadDashboardSafe();
 }
 
 async function manualRefresh() {
@@ -256,16 +266,15 @@ async function manualRefresh() {
   if (now - lastManualRefreshTime < MIN_INTERVAL) return;
 
   lastManualRefreshTime = now;
+  if (isLoading) return; // Prevent overlapping
 
   // Show spinner and disable button
   refreshSpinner.style.visibility = "visible";
   refreshBtn.disabled = true;
 
-  clearTimeout(refreshTimeout);
-  await loadDashboard();
-
-  // Restart the periodic update (which schedules the next update)
-  periodicUpdate();
+  clearTimeout(refreshTimeout); // Stops the scheduled auto-refresh
+  await loadDashboardSafe();
+  periodicUpdate(); // Restart the cycle
 
   // Hide spinner and re-enable button
   refreshSpinner.style.visibility = "hidden";
