@@ -420,8 +420,12 @@
           }
         });
 
+      document.getElementById("trackButton").addEventListener("click", function () {
+      trackRider(); // Make sure this function exists
+      });
+      
       document.getElementById("newTab").addEventListener("click", function () {
-        window.open("Trackrider.html", "_blank");
+      window.open("Trackrider.html", "_blank");
       });   
 
       function trackRider() {
