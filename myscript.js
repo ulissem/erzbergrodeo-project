@@ -58,7 +58,7 @@ function updateLeaderboard(data) {
     alt="${r.Nation}" 
     class="flag-icon"
     style="vertical-align: middle; margin-right: 4px; width: 16px; height: 12px;" />
-  ${r.Nation || "N/A"} &middot; ${r.Bike || "Unknown"}
+  ${r.Nation || "N/A"} &middot; ${r.Bike || "Unknown Nation"}
 </div>
   </td>
   <td>${r.ERZ_Time || "-"}</td>
@@ -138,7 +138,7 @@ function updateCheckpointRiders(data) {
       name: r.DisplayNameERZ,
       lastCPTime: timeFormatted,
       nation: r.Nation || "N/A",
-      bike: r.Bike || "Unknown",
+      bike: r.Bike || "Unknown Bike",
     });
   });
 
