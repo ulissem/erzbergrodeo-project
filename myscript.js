@@ -1,5 +1,5 @@
 const API_URL =
-  "https://api.raceresult.com/341508/MRZHEBCS0R2X3WGCZLWHDFS46SLBA7FD";
+  "https://api.raceresult.com/292775/MRZHEBCS0R2X3WGCZLWHDFS46SLBA7FD";
 
 async function fetchData() {
   const res = await fetch(API_URL);
