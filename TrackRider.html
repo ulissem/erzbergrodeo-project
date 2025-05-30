@@ -368,197 +368,96 @@
     </div>
 
     <script>
-      let data = [];
+  function convertToLocalTime(utcTime) {
+    if (!utcTime) return "-";
+    const date = new Date(utcTime);
+    date.setHours(date.getHours() + 2); // Adjust to your timezone if needed
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+    return `${hours}:${minutes}:${seconds}`;
+  }
 
-      fetch(
-        "https://api.raceresult.com/341508/8VWOJLQS8MB2EEUUPFH901C8IBIIA67K"
-      )
-        .then((res) => res.json())
-        .then((json) => (data = json));
+  document.getElementById("trackButton").addEventListener("click", () => {
+    const bib = document.getElementById("bib").value.trim();
+    if (!bib) {
+      alert("Please enter a valid bib number.");
+      return;
+    }
 
-      function convertToLocalTime(utcTime) {
-        if (!utcTime) return "-";
-        const date = new Date(utcTime);
-        date.setHours(date.getHours() + 2); // Add 2 hours for timezone adjustment
-        const hours = String(date.getUTCHours()).padStart(2, "0");
-        const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-        const seconds = String(date.getUTCSeconds()).padStart(2, "0");
-        const milliseconds = String(date.getUTCMilliseconds()).padStart(3, "0");
-        return `${hours}:${minutes}:${seconds}.${milliseconds}`;
-      }
+    const encodedFilter = encodeURIComponent(`[Erz_Number]=${bib}`);
+    const apiUrl = `https://api.raceresult.com/341508/8VWOJLQS8MB2EEUUPFH901C8IBIIA67K?&filter=${encodedFilter}`;
 
-      function formatTime(raw) {
-        if (!raw) return "-";
-        try {
-          const date = new Date(raw);
-          const hours = String(date.getUTCHours()).padStart(2, "0");
-          const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-          const seconds = String(date.getUTCSeconds()).padStart(2, "0");
-          const milliseconds = String(date.getUTCMilliseconds()).padStart(
-            3,
-            "0"
-          );
-          return `${hours}:${minutes}:${seconds}.${milliseconds}`;
-        } catch {
-          return raw;
-        }
-      }
-
-      // Function to select text in the input field when it gains focus
-      document.getElementById("bib").addEventListener("focus", function () {
-        this.select(); // Select all the text in the input
-      });
-
-      // Function to trigger the search on pressing Enter and remove focus from the input field
-      document
-        .getElementById("bib")
-        .addEventListener("keydown", function (event) {
-          if (event.key === "Enter") {
-            event.preventDefault(); // Prevent default behavior (form submission, etc.)
-            trackRider(); // Run the trackRider function
-            this.blur(); // Remove focus from the input field
-          }
-        });
-
-      document.getElementById("trackButton").addEventListener("click", function () {
-      trackRider(); // Make sure this function exists
-      });
-      
-      document.getElementById("newTab").addEventListener("click", function () {
-      window.open("Trackrider.html", "_blank");
-      });   
-
-      function trackRider() {
-        const bib = parseInt(document.getElementById("bib").value);
-        const rider = data.find((r) => r.ERZ_Number === bib);
-
-        if (!rider) {
-          alert("Rider not found");
+    fetch(apiUrl)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data || data.Results.length === 0) {
+          alert("Rider not found.");
           return;
         }
 
-        document.getElementById("riderInfo").style.display = "block";
-        document.getElementById("riderName").innerText = rider.DisplayNameERZ;
-        document.getElementById("startTime").innerText =
-          convertToLocalTime(rider.Start) || "-";
-        document.getElementById("totalTime").innerText = rider.ERZ_Time || "-";
+        const rider = data.Results[0];
+        document.getElementById("riderInfo").style.display = "grid";
+        document.getElementById("riderName").textContent = rider.Name || "Unknown";
+        document.getElementById("startTime").textContent = convertToLocalTime(rider.Start);
+        document.getElementById("totalTime").textContent = convertToLocalTime(rider.Total);
+        document.getElementById("lastCP").textContent = rider.LastPassage || "-";
+        document.getElementById("lastCheckpointName").textContent = rider.CheckpointName || "-";
 
-        const checkpointNames = [
-          "Gmoto Wasserleitung LIVE",
-          "Arena View",
-          "Rocky Racoon",
-          "Blakläder Zentrum am Berg LIVE",
-          "Drive Away",
-          "Wacker Neuson LIVE",
-          "Ludwig's Land",
-          "Repository",
-          "Crossing",
-          "Carl's Dinner Light LIVE",
-          "Double Fault",
-          "George Avenue",
-          "Machine LIVE",
-          "Dornröschenwald",
-          "Devil's Kitchen",
-          "Elevator LIVE",
-          "Cuckoo's Nest LIVE",
-          "One Way Train LIVE",
-          "Chris' Stony Party",
-          "Udo's Playground LIVE",
-          "Burping Stones",
-          "Carl's Dinner LIVE",
-          "Motorex Highway LIVE",
-          "Killing Leap LIVE",
-          "Siberia Dynamite LIVE",
-          "Lazy Noon LIVE",
-          "FINISH"
-        ];
+        // Clear previous segments and CP table
+        const progressBar = document.getElementById("progressBarContainer");
+        progressBar.innerHTML = "";
 
-        let lastCP = 0;
+        if (rider.TotalCheckpoints) {
+          for (let i = 1; i <= rider.TotalCheckpoints; i++) {
+            const segment = document.createElement("div");
+            segment.classList.add("progress-bar-segment");
+            if (i > rider.PassedCheckpoints) segment.classList.add("incomplete");
+            progressBar.appendChild(segment);
+          }
+        }
+
+        // Fill table
         const tbody = document.querySelector("#cpTable tbody");
         tbody.innerHTML = "";
 
-        let lastCheckpointName = "";
+        (rider.Checkpoints || []).forEach((cp) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${cp.CP}</td>
+            <td>${convertToLocalTime(cp.Time)}</td>
+            <td>${convertToLocalTime(cp.RaceTime)}</td>
+            <td>${convertToLocalTime(cp.SectorTime)}</td>
+            <td>${cp.Name}</td>
+          `;
+          tbody.appendChild(row);
+        });
+      })
+      .catch((err) => {
+        console.error("API error:", err);
+        alert("There was an error fetching the rider data.");
+      });
+  });
 
-        let previousCpTime = null;
-
-for (let i = 1; i <= 27; i++) {
-  const cpTime = rider["CP" + i];
-  const startTime = rider.Start;
-
-  if (cpTime) {
-    lastCP = i;
-    lastCheckpointName = checkpointNames[i - 1];
-
-    const raceTimeMs = new Date(cpTime) - new Date(startTime);
-    const raceTimeFormatted = formatRaceTime(raceTimeMs);
-
-    let sectorTimeFormatted = "-";
-    if (previousCpTime) {
-      const sectorTimeMs = new Date(cpTime) - new Date(previousCpTime);
-      sectorTimeFormatted = formatRaceTime(sectorTimeMs);
+  document.getElementById("newTab").addEventListener("click", () => {
+    const bib = document.getElementById("bib").value.trim();
+    if (!bib) {
+      alert("Please enter a valid bib number.");
+      return;
     }
+    const url = `${location.href.split("?")[0]}?bib=${bib}`;
+    window.open(url, "_blank");
+  });
 
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>CP${i}</td>
-      <td>${convertToLocalTime(cpTime)}</td>
-      <td>${raceTimeFormatted}</td>
-      <td>${sectorTimeFormatted}</td>
-      <td>${lastCheckpointName}</td>
-    `;
-    tbody.appendChild(row);
-
-    // Update previousCpTime for next iteration
-    previousCpTime = cpTime;
-  }
-}
-
-        // Format milliseconds into hh:mm:ss.kkk
-        function formatRaceTime(ms) {
-          const totalSeconds = Math.floor(ms / 1000);
-          const milliseconds = String(ms % 1000).padStart(3, "0");
-          const hours = String(Math.floor(totalSeconds / 3600)).padStart(
-            2,
-            "0"
-          );
-          const minutes = String(
-            Math.floor((totalSeconds % 3600) / 60)
-          ).padStart(2, "0");
-          const seconds = String(totalSeconds % 60).padStart(2, "0");
-          return `${hours}:${minutes}:${seconds}.${milliseconds}`;
-        }
-
-        document.getElementById("lastCP").innerText = lastCP
-          ? `CP${lastCP}`
-          : "-";
-        document.getElementById("lastCheckpointName").innerText =
-          lastCheckpointName || "-";
-
-        // Generate progress bar segments based on rider's progress
-        const progressBarContainer = document.getElementById(
-          "progressBarContainer"
-        );
-        progressBarContainer.innerHTML = ""; // Clear existing segments
-
-        // Create segments for all 27 checkpoints
-        for (let i = 1; i <= 27; i++) {
-          const segment = document.createElement("div");
-          segment.classList.add("progress-bar-segment");
-
-          // Mark completed segments
-          if (i <= lastCP) {
-            segment.classList.remove("incomplete");
-          } else {
-            segment.classList.add("incomplete");
-          }
-
-          progressBarContainer.appendChild(segment);
-        }
-
-        const progressPercent = Math.round((lastCP / 27) * 100);
-        document.getElementById("progressPercent").innerText =
-          progressPercent + "%";
-      }
-    </script>
+  // Optional: Auto-load bib from URL if opened with ?bib=123
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const bib = params.get("bib");
+    if (bib) {
+      document.getElementById("bib").value = bib;
+      document.getElementById("trackButton").click();
+    }
+  });
+</script>
   </body>
 </html>
