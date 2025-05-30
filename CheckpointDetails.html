@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Red Bull Erzbergrodeo - Checkpoint Details</title>
+    <style>
+
+        :root {
+        --dark-bg: #1d1d1b;
+        --card-bg: #2a2a28;
+        --accent-yellow: #fecc01;
+        --accent-red: #dd0741;
+        --text-light: #f8f8f8;
+        --text-muted: #b0b0b0;
+        --border-color: #444442;
+        --progress-complete: #22c55e;
+        --progress-early: #f87171;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Roboto", "Arial", sans-serif;
+      }
+
+      body {
+        background: #1d1d1b;
+        color: #fff;
+        min-height: 100vh;
+        padding: 20px;
+        background-image: radial-gradient(
+          circle at 20% 30%,
+          rgba(35, 35, 33, 0.8) 0%,
+          #1d1d1b 70%
+        );
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="none" stroke="%23333330" stroke-width="1"/></svg>');
+        opacity: 0.3;
+        z-index: -1;
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      header {
+        text-align: center;
+        padding: 10px 0 20px;
+        margin-bottom: 15px;
+        position: relative;
+      }
+
+      .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 10px;
+        gap: 15px;
+      }
+
+      .erzberg-text {
+        font-size: 2.5rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: var(--accent-yellow);
+        text-shadow: 0 0 10px rgba(254, 204, 1, 0.3);
+        position: relative;
+      }
+
+      .erzberg-text::after {
+        content: "SPEAKER DASHBOARD";
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--accent-red);
+        letter-spacing: 3px;
+        white-space: nowrap;
+      }
+
+      .subtitle {
+        font-size: 1rem;
+        opacity: 0.8;
+        margin-top: 40px;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        color: var(--text-muted);
+      }
+
+      .logo-with-tracker {
+        position: relative;
+        display: inline-block; /* needed to apply ::after */
+      }
+
+      .logo-with-tracker::after {
+        content: "CHECKPOINT DETAILS";
+        position: absolute;
+        bottom: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #dd0741;
+        letter-spacing: 3px;
+        white-space: nowrap;
+      }
+
+      .logo-image {
+        height: 120px;
+        display: block;
+        filter: drop-shadow(2px 2px 6px white);
+      }
+
+      .controls-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: rgba(40, 40, 38, 0.8);
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .left-controls,
+      .right-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .track-link {
+        font-weight: 600;
+        text-decoration: none;
+        background: linear-gradient(to right, var(--accent-yellow), #ffb700);
+        color: #1d1d1b;
+        padding: 10px 20px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(254, 204, 1, 0.3);
+        font-size: 1.1rem;
+      }
+
+      .track-link:hover {
+        background: linear-gradient(to right, #ffd83b, #ffc83b);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(254, 204, 1, 0.4);
+      }
+
+      .track-link i {
+        margin-right: 8px;
+      }
+
+      /* Auto-refresh controls */
+      .refresh-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      /* MODIFIED: Fixed height and scrollable container */
+      .search-container {
+        background: rgba(40, 40, 38, 0.8);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        margin-bottom: 30px;
+        border: 3px solid #fecc01;
+        height: 50vh; /* Fixed height */
+        display: flex;
+        flex-direction: column;
+        max-width: 1400px;
+        margin: auto
+      }
+
+      /* Scrollable content area */
+      .scrollable-content {
+        flex: 1;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      .input-group {
+        display: flex;
+        max-width: 600px;
+        margin: 0 auto;
+        gap: 10px;
+      }
+
+      #bib {
+        flex: 1;
+        padding: 15px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        background: rgba(30, 30, 28, 0.9);
+        color: #fecc01;
+        outline: none;
+        transition: all 0.3s ease;
+        border: 2px solid #444442;
+        font-weight: 600;
+      }
+
+      #bib:focus {
+        background: rgba(35, 35, 33, 0.9);
+        box-shadow: 0 0 0 3px rgba(254, 204, 1, 0.3);
+        border-color: #fecc01;
+      }
+
+      #bib::placeholder {
+        color: rgba(254, 204, 1, 0.5);
+        font-weight: normal;
+      }
+
+      button {
+        padding: 15px 30px;
+        border: none;
+        border-radius: 8px;
+        color: #1d1d1b;
+        font-size: 1.1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      }
+
+      #trackButton {
+        background: linear-gradient(to right, #fecc01, #ffb700);
+      }
+
+      #trackButton:hover {
+        background: linear-gradient(to right, #ffd83b, #ffc83b);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(254, 204, 1, 0.4);
+      }
+
+      #trackButton:active {
+        transform: translateY(1px);
+      }
+
+      .controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 25px;
+        flex-wrap: wrap;
+      }
+
+      .controls button {
+        padding: 12px 25px;
+        font-size: 0.95rem;
+      }
+
+      #newTab {
+        background: rgba(40, 40, 38, 0.9);
+        color: #fecc01;
+        border: 2px solid #fecc01;
+      }
+
+      #newTab:hover {
+        background: rgba(50, 50, 48, 0.9);
+        box-shadow: 0 6px 20px rgba(254, 204, 1, 0.3);
+      }
+
+      #dashBoard {
+        background: #fecc01;
+        color: rgba(40, 40, 38, 0.9);
+        border: 2px solid #fecc01;
+      }
+
+      #dashBoard:hover {
+        color: #fecc01;
+        background: rgba(50, 50, 48, 0.9);
+        box-shadow: 0 6px 20px rgba(254, 204, 1, 0.3);
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        padding: 20px;
+        font-size: 0.9rem;
+        color: #777;
+        border-top: 1px solid #333330;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      /* MODIFIED: RRPublish styles */
+      .RRPublish div.ListControl {
+        display: none;
+      }
+
+      .RRPublish table.MainTable {
+        background-color: #1d1d1b !important;
+        min-width: 100%;
+      }
+
+      .RRPublish
+        table:not(.hasBrokeCols)
+        tr.Hover:not(.MultiLine)
+        td:last-child {
+        background-image: none !important;
+      }
+
+      .RRPublish *,
+      table.divDetailsParent * {
+        font-size: 1.4rem; /* Changed from 1vw to fixed size */
+      }
+
+      /* Sticky table header */
+      .RRPublish table thead {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .search-container thead {
+        color: #dd0741;
+      }
+
+      .search-container thead th {
+        background-color: #1d1d1b !important;
+        position: sticky;
+        top: 0;
+      }
+
+      .search-container table tbody tr:nth-child(odd) {
+        background-color: #f0f0f0;
+        color: black;
+      }
+
+      .search-container table tbody tr:nth-child(even) {
+        background-color: #d3d3d3;
+        color: black;
+      }
+
+      /* Scrollbar styling */
+      .scrollable-content::-webkit-scrollbar {
+        width: 10px;
+      }
+
+      .scrollable-content::-webkit-scrollbar-track {
+        background: rgba(30, 30, 28, 0.5);
+        border-radius: 4px;
+      }
+
+      .scrollable-content::-webkit-scrollbar-thumb {
+        background: #fecc01;
+        border-radius: 4px;
+      }
+
+      .scrollable-content::-webkit-scrollbar-thumb:hover {
+        background: #ffb700;
+      }
+
+      .RRPublish > div.SelectorParent > div.Selector {
+        background-color: #1D1D1B !important;
+        border-bottom: 0px solid !important;
+        marg
+      }
+
+      /* Header shadow when scrolling */
+      .RRPublish table thead {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      @media (max-width: 768px) {
+        .input-group {
+          flex-direction: column;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+
+        table {
+          font-size: 0.9rem;
+        }
+
+        .erzberg-text {
+          font-size: 2.2rem;
+        }
+
+        .erzberg-text::after {
+          font-size: 1rem;
+          bottom: -18px;
+        }
+
+        .controls {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .controls button {
+          width: 100%;
+          max-width: 300px;
+        }
+
+        .logo-image {
+          height: 85px;
+          display: block;
+          filter: drop-shadow(2px 2px 6px white);
+        }
+
+        /* Adjust for mobile */
+        .search-container {
+          padding: 15px;
+          height: 500px; /* Maintain fixed height on mobile */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo-container">
+          <div class="logo-with-tracker">
+            <img src="Logo.png" alt="Erzbergrodeo Logo" class="logo-image" />
+          </div>
+        </div>
+        <p class="subtitle">
+          Official dashboard for Red Bull Erzbergrodeo race announcers
+        </p>
+      </header>
+
+      <div class="controls-bar">
+        <div class="left-controls">
+    <a href="TrackRider.html" class="track-link" target="_blank">
+      <i class="fas fa-user"></i> Track a Rider
+    </a>
+    <a href="index.html" class="track-link" target="_blank">
+      <i class="fas fa-user"></i> Dashboard
+    </a>
+  </div>
+  </div>
+  </div>
+
+      <div class="search-container">
+        <!-- Wrapped in scrollable container -->
+        <div class="scrollable-content">
+          <div id="divRRPublish" class="RRPublish"></div>
+          <script
+            type="text/javascript"
+            src="https://my.raceresult.com/RRPublish/load.js.php?lang=en"
+          ></script>
+          <script type="text/javascript">
+            <!--
+            var rrp = new RRPublish(
+              document.getElementById("divRRPublish"),
+              341508,
+              "live"
+            );
+            rrp.ShowTimerLogo = true;
+            rrp.ShowInfoText = false;
+            -->
+          </script>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          Red Bull Erzbergrodeo Rider Tracking System &copy; 2025 | Data
+          refreshes automatically
+        </p>
+        <p style="margin-top: 10px; font-size: 0.8rem; color: #555">
+          For official use by Red Bull Erzbergrodeo announcers and staff
+        </p>
+        <p style="margin-top: 10px; font-size: 0.8rem; color: #555">
+          with ❤️ <br />Ulisse Mariangeli
+        </p>
+      </div>
+    </div>
+  </body>
+</html>
