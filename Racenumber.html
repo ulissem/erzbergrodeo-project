@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Red Bull Erzbergrodeo - Rider Number</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Arial", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container {
+        text-align: center;
+        max-width: 800px;
+        width: 100%;
+      }
+
+      .header {
+        margin-bottom: 30px;
+      }
+
+      .header h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+      }
+
+      .header .subtitle {
+        color: #ffcc00;
+        font-size: 1.3rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 4px;
+        margin-bottom: 5px;
+      }
+
+      .header .year {
+        color: white;
+        font-size: 3rem;
+        font-weight: 900;
+        margin: 15px 0;
+        letter-spacing: 2px;
+      }
+
+      .header .tagline {
+        color: #d4af37;
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+      }
+
+      /* Race Number Styles */
+      .race-number-container {
+        display: flex;
+        width: 300px;
+        height: 200px;
+        margin: 30px auto;
+        background: white;
+        border: 3px solid black;
+        border-radius: 20px 20px 8px 8px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        position: relative;
+      }
+
+      .side-panel {
+        width: 30px;
+        background: white;
+      }
+
+      .center-panel {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .logo-area {
+        height: 50px;
+        background: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 5px;
+      }
+
+      .logo {
+        width: 120px;
+        height: 35px;
+        background: #c60c30;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 3px;
+      }
+
+      .logo::before {
+        content: "RED BULL";
+        position: absolute;
+        color: white;
+        font-weight: bold;
+        font-size: 0.85rem;
+        letter-spacing: 1px;
+      }
+
+      .logo::after {
+        content: "•";
+        position: absolute;
+        color: white;
+        font-size: 1.5rem;
+        top: -7px;
+      }
+
+      .number-area {
+        flex-grow: 1;
+        background: linear-gradient(135deg, #d4af37, #b8860b);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-top: 3px solid black;
+        border-left: 3px solid black;
+        border-right: 3px solid black;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+
+      .number {
+        font-size: 6rem;
+        font-weight: 900;
+        color: black;
+        text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+      }
+
+      .instructions {
+        margin-top: 30px;
+        color: white;
+        background: rgba(30, 30, 28, 0.7);
+        border-radius: 10px;
+        padding: 20px;
+        text-align: left;
+        border: 1px solid #444;
+      }
+
+      .instructions h2 {
+        color: #d4af37;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+
+      .instructions ul {
+        padding-left: 20px;
+      }
+
+      .instructions li {
+        margin: 10px 0;
+        line-height: 1.5;
+      }
+
+      .instructions code {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+      }
+
+      .footer {
+        margin-top: 30px;
+        color: #aaa;
+        font-size: 0.9rem;
+      }
+
+      /* Responsive design */
+      @media (max-width: 500px) {
+        .race-number-container {
+          width: 250px;
+          height: 170px;
+        }
+
+        .logo {
+          width: 100px;
+          height: 30px;
+        }
+
+        .number {
+          font-size: 5rem;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .header .tagline {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Red Bull Erzbergrodeo</h1>
+        <div class="subtitle">WORLD XTREME ENDURO SUPREME</div>
+        <div class="year">2025</div>
+        <div class="tagline">TOUGHER THAN IRON</div>
+      </div>
+
+      <div class="race-number-container">
+        <div class="side-panel"></div>
+        <div class="center-panel">
+          <div class="logo-area">
+            <img src="Logo.png" alt="Red Bull Logo" style="height: 35px" />
+          </div>
+          <div class="number-area">
+            <div class="number">69</div>
+          </div>
+        </div>
+        <div class="side-panel"></div>
+      </div>
+
+      <div class="instructions">
+        <h2>Implementation Instructions</h2>
+        <p>To use this race number design in your project:</p>
+        <ul>
+          <li>
+            Create a container div with class <code>race-number-container</code>
+          </li>
+          <li>
+            Inside, add three divs:
+            <ul>
+              <li><code>side-panel</code> (left white border)</li>
+              <li><code>center-panel</code> (main content area)</li>
+              <li><code>side-panel</code> (right white border)</li>
+            </ul>
+          </li>
+          <li>
+            Inside the <code>center-panel</code>, add:
+            <ul>
+              <li><code>logo-area</code> (top white section for the logo)</li>
+              <li>
+                <code>number-area</code> (gold section for the rider number)
+              </li>
+            </ul>
+          </li>
+          <li>
+            To use your actual logo, replace the placeholder with:
+            <pre><code>&lt;img src="Logo.png" alt="Red Bull Logo" style="height: 35px;"&gt;</code></pre>
+          </li>
+        </ul>
+      </div>
+
+      <div class="footer">
+        Red Bull Erzbergrodeo 2025 - World Extreme Enduro Championship
+      </div>
+    </div>
+  </body>
+</html>

@@ -223,6 +223,18 @@
         box-shadow: 0 6px 20px rgba(254, 204, 1, 0.3);
       }
 
+      #dashBoard {
+        background: #fecc01;
+        color: rgba(40, 40, 38, 0.9);
+        border: 2px solid #fecc01;
+      }
+
+      #dashBoard:hover {
+        color: #fecc01;
+        background: rgba(50, 50, 48, 0.9);
+        box-shadow: 0 6px 20px rgba(254, 204, 1, 0.3);
+      }
+
       #refreshStatus {
         background: rgba(30, 30, 28, 0.9);
         padding: 10px 20px;
@@ -486,11 +498,7 @@
       <header>
         <div class="logo-container">
           <div class="logo-with-tracker">
-            <img
-              src="https://my.raceresult.com/341508/elements/picture.php?eventid=341508&name=Logo.png"
-              alt="Erzbergrodeo Logo"
-              class="logo-image"
-            />
+            <img src="Logo.png" alt="Erzbergrodeo Logo" class="logo-image" />
           </div>
         </div>
         <p class="subtitle">
@@ -509,6 +517,7 @@
           <div id="refreshStatus">
             Next refresh: <span id="refreshCountdown">10</span>s
           </div>
+          <button id="dashBoard">Dashboard</button>
           <button id="toggleRefresh">Pause Auto-Refresh</button>
           <button id="newTab">Open New Tab</button>
         </div>
@@ -665,6 +674,12 @@
           .getElementById("newTab")
           .addEventListener("click", function () {
             window.open("Trackrider.html", "_blank");
+          });
+
+        document
+          .getElementById("dashBoard")
+          .addEventListener("click", function () {
+            window.open("Dashboard.html");
           });
 
         // Toggle auto-refresh
