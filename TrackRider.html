@@ -15,6 +15,7 @@
         --border-color: #444442;
         --progress-complete: #22c55e;
         --progress-early: #f87171;
+        --border-color: #444442;
       }
 
       * {
@@ -134,12 +135,12 @@
       }
 
       .search-container {
-        background: rgba(40, 40, 38, 0.8);
         padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         margin-bottom: 30px;
-        border: 1px solid #333330;
+        background: rgba(40, 40, 38, 0.8);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
 
       .input-group {
@@ -270,13 +271,13 @@
       }
 
       .info-card {
-        background: rgba(40, 40, 38, 0.8);
-        border-radius: 12px;
         padding: 25px;
         margin-bottom: 30px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        border: 1px solid #333330;
         display: none;
+        background: rgba(40, 40, 38, 0.8);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
 
       .info-grid {
@@ -514,7 +515,7 @@
             <img src="Logo.png" alt="Erzbergrodeo Logo" class="logo-image" />
           </div>
         </div>
-        <p class="subtitle">
+        <p class="subtitle" style="display: none">
           Official real-time rider tracking system for Red Bull Erzbergrodeo
           announcers
         </p>
@@ -603,8 +604,16 @@
         <p style="margin-top: 10px; font-size: 0.8rem; color: #555">
           For official use by Red Bull Erzbergrodeo announcers and staff
         </p>
-        <p style="margin-top: 10px; font-size: 0.8rem; color: #555">
-          with ❤️ <br />Ulisse Mariangeli
+        <p style="margin-top: 15px">
+          with ❤️ <br />
+          <a
+            href="http://www.linkedin.com/in/ulissemariangeli"
+            style="color: #777; text-decoration: underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ulisse Mariangeli
+          </a>
         </p>
       </div>
     </div>

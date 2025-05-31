@@ -72,29 +72,6 @@
         gap: 15px;
       }
 
-      .erzberg-text {
-        font-size: 2.5rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        color: var(--accent-yellow);
-        text-shadow: 0 0 10px rgba(254, 204, 1, 0.3);
-        position: relative;
-      }
-
-      .erzberg-text::after {
-        content: "SPEAKER DASHBOARD";
-        position: absolute;
-        bottom: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 1.1rem;
-        font-weight: 700;
-        color: var(--accent-red);
-        letter-spacing: 3px;
-        white-space: nowrap;
-      }
-
       .subtitle {
         font-size: 1rem;
         opacity: 0.8;
@@ -110,6 +87,7 @@
         opacity: 0.8;
         font-weight: 800;
         margin-bottom: 5px;
+        margin-top: -10px;
         max-width: 600px;
         margin-left: auto;
         margin-right: auto;
@@ -149,7 +127,7 @@
         margin-bottom: 20px;
         padding: 15px;
         background: rgba(40, 40, 38, 0.8);
-        border-radius: 8px;
+        border-radius: 12px;
         border: 1px solid var(--border-color);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
@@ -167,7 +145,7 @@
         background: linear-gradient(to right, var(--accent-yellow), #ffb700);
         color: #1d1d1b;
         padding: 10px 20px;
-        border-radius: 8px;
+        border-radius: 12px;
         transition: all 0.3s ease;
         box-shadow: 0 4px 10px rgba(254, 204, 1, 0.3);
         font-size: 1.1rem;
@@ -192,17 +170,17 @@
 
       /* MODIFIED: Fixed height and scrollable container */
       .search-container {
-        background: rgba(40, 40, 38, 0.8);
         padding: 25px;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         margin-bottom: 30px;
-        border: 3px solid #fecc01;
         height: 50vh; /* Fixed height */
         display: flex;
         flex-direction: column;
         max-width: 1400px;
-        margin: auto
+        margin: auto;
+        background: rgba(40, 40, 38, 0.8);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
       }
 
       /* Scrollable content area */
@@ -229,29 +207,24 @@
         filter: drop-shadow(2px 2px 6px white);
       }
 
-      #bib {
-        flex: 1;
-        padding: 15px 20px;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.1rem;
+      #refreshStatus {
         background: rgba(30, 30, 28, 0.9);
-        color: #fecc01;
-        outline: none;
-        transition: all 0.3s ease;
-        border: 2px solid #444442;
+        padding: 8px 15px;
+        border-radius: 30px;
+        font-size: 0.95rem;
+        border: 1px solid var(--border-color);
         font-weight: 600;
+        color: var(--accent-yellow);
+        box-shadow: 0 0 10px rgba(254, 204, 1, 0.1);
       }
 
-      #bib:focus {
-        background: rgba(35, 35, 33, 0.9);
-        box-shadow: 0 0 0 3px rgba(254, 204, 1, 0.3);
-        border-color: #fecc01;
-      }
-
-      #bib::placeholder {
-        color: rgba(254, 204, 1, 0.5);
-        font-weight: normal;
+      #refreshStatus span {
+        color: var(--accent-red);
+        font-weight: 700;
+        font-size: 1.1rem;
+        min-width: 22px;
+        display: inline-block;
+        text-align: center;
       }
 
       button {
@@ -349,7 +322,7 @@
 
       .RRPublish *,
       table.divDetailsParent * {
-        font-size: 1.4rem; /* Changed from 1vw to fixed size */
+        font-size: 1rem; /* Changed from 1vw to fixed size */
       }
 
       /* Sticky table header */
@@ -409,6 +382,11 @@
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
       }
 
+      .search-container table tbody tr:hover {
+          background-color: #fecc01 !important;
+        }
+      
+
       @media (max-width: 768px) {
         .input-group {
           flex-direction: column;
@@ -452,6 +430,15 @@
           padding: 15px;
           height: 500px; /* Maintain fixed height on mobile */
         }
+
+        .RRPublish > div.SelectorParent > div.SelectorMenu > div > div:nth-child(2) > div {
+          background-color: transparent !important;
+        }
+
+        .RRPublish > div.SelectorParent > div.SelectorMenu > div > div:nth-child(2) > div:hover {
+          color: #555555 !important;
+          background-color: #fecc01 !important;
+        }
       }
     </style>
   </head>
@@ -463,22 +450,30 @@
             <img src="Logo.png" alt="Erzbergrodeo Logo" class="logo-image" />
           </div>
         </div>
-        <p class="subtitle">
+        <p class="subtitle" style="display: none;">
           Official dashboard for Red Bull Erzbergrodeo race announcers
         </p>
       </header>
 
-      <div class="controls-bar">
-        <div class="left-controls">
-    <a href="TrackRider.html" class="track-link">
-      <i class="fas fa-user"></i> Track a Rider
-    </a>
-    <a href="index.html" class="track-link">
-      <i class="fas fa-user"></i> Dashboard
-    </a>
-  </div>
-  </div>
-  </div>
+        <div class="controls-bar">
+          <div class="left-controls">
+            <a href="TrackRider.html" class="track-link">
+              <i class="fas fa-user"></i> Track a Rider
+            </a>
+            <a href="index.html" class="track-link">
+              <i class="fas fa-user"></i> Dashboard
+            </a>
+          </div>
+
+          <div class="right-controls">
+            <div class="refresh-controls">
+              <div id="refreshStatus">
+                Next refresh: <span id="refreshCountdown">10</span>s
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
       <div class="search-container">
         <p class="subtitle-search">
           Select Checkpoint from Drop Down
@@ -509,13 +504,41 @@
           Red Bull Erzbergrodeo Rider Tracking System &copy; 2025 | Data
           refreshes automatically
         </p>
-        <p style="margin-top: 10px; font-size: 0.8rem; color: #555">
+        <p style="margin-top: 10px; font-size: 0.8rem; color: #777">
           For official use by Red Bull Erzbergrodeo announcers and staff
         </p>
-        <p style="margin-top: 10px; font-size: 0.8rem; color: #555">
-          with ❤️ <br />Ulisse Mariangeli
+       <p style="margin-top: 15px">
+          with ❤️ <br />
+          <a
+            href="http://www.linkedin.com/in/ulissemariangeli"
+            style="color: #777; text-decoration: underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ulisse Mariangeli
+          </a>
         </p>
       </div>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+    const countdownElement = document.getElementById('refreshCountdown');
+    let countdown = parseInt(countdownElement.textContent) || 10;
+
+    const countdownInterval = setInterval(() => {
+        countdown--;
+        
+        if (countdown >= 0) {
+            countdownElement.textContent = countdown;
+        }
+        
+        if (countdown === 0) {
+            // Add your refresh functionality here
+            countdown = 10; 
+        }
+    }, 1000);
+});
+    </script>
   </body>
 </html>
