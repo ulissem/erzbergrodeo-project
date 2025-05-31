@@ -170,17 +170,59 @@
 
       /* MODIFIED: Fixed height and scrollable container */
       .search-container {
+        position: relative;
         padding: 25px;
         margin-bottom: 30px;
-        height: 50vh; /* Fixed height */
-        display: flex;
-        flex-direction: column;
+        height: 50vh;              /* Initial height */
+        min-height: 30vh;          /* Prevent shrinking below 50vh */
         max-width: 1400px;
         margin: auto;
         background: rgba(40, 40, 38, 0.8);
         border-radius: 12px;
         border: 1px solid var(--border-color);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+        display: flex;
+        flex-direction: column;
+
+        resize: vertical;              /* Enable resizing */
+        overflow: auto;            /* Required for resize to work */
+      }
+
+      /* Resize hint styling */
+      .resize-hint {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+        background-color: var(--accent-yellow);
+        color: var(--dark-bg);
+        font-size: 1.5rem;
+        padding: 2px 8px;
+        border-radius: 4px;
+        z-index: 20;
+        pointer-events: none;
+        opacity: 0.9;
+        transform: translateY(50px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+      }
+
+      .search-container:hover .resize-hint {
+        opacity: 0.9;
+        transform: translateY(0);
+      }
+
+      /* Corner indicator */
+      .resize-corner {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-bottom: 35px solid var(--accent-yellow);
+        border-left: 35px solid transparent;
+        z-index: 10;
+        pointer-events: none;
+        opacity: 1;
       }
 
       /* Scrollable content area */
@@ -475,6 +517,8 @@
         </div>
     </div>
       <div class="search-container">
+        <div class="resize-corner"></div>
+        <div class="resize-hint">resize me!</div>
         <p class="subtitle-search">
           Select Checkpoint from Drop Down
         </p>
@@ -538,6 +582,17 @@
             countdown = 10; 
         }
     }, 1000);
+    // Show the hint for 5 seconds on page load
+        const resizeHint = document.querySelector('.resize-hint');
+        setTimeout(() => {
+          resizeHint.style.opacity = '1';
+          resizeHint.style.transform = 'translateX(0)';
+        }, 1000);
+        
+        setTimeout(() => {
+          resizeHint.style.opacity = '0';
+          resizeHint.style.transform = 'translateX(30px)';
+        }, 3000);
 });
     </script>
   </body>
