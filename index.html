@@ -639,8 +639,8 @@
           Red Bull Erzbergrodeo Dashboard &copy; 2025 | Data
           refreshes automatically every 10 seconds
         </p>
-        <p style="margin-top: 10px; font-size: 0.8rem; color: #555">
-          For official use by Red Bull Erzbergrodeo announcers and staff
+        <p style="margin-top: 10px; font-size: 0.8rem; color: #777">
+          For official use by Red Bull Erzbergrodeo announcers and staff || 👀 <span id="live-count">0</span> users online
         </p>
         <p style="margin-top: 15px">
           with ❤️ <br />
@@ -952,5 +952,40 @@
      <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "7adad55e14dc40fba65b35aeede17655"}'>
      </script>
      <!-- End Cloudflare Web Analytics -->
+      <!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD9ek886LyM8TEp69xS5laxTXmpEQlapq0",
+    authDomain: "erzberg-analytics.firebaseapp.com",
+    databaseURL: "https://erzberg-analytics-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "erzberg-analytics",
+    storageBucket: "erzberg-analytics.firebasestorage.app",
+    messagingSenderId: "633578135784",
+    appId: "1:633578135784:web:be3bf625ba68fee9df295d"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const presenceRef = db.ref("presence");
+  const connectionsRef = db.ref("connections");
+
+  const connectedRef = db.ref(".info/connected");
+  connectedRef.on("value", (snap) => {
+    if (snap.val() === true) {
+      const con = connectionsRef.push(true);
+      con.onDisconnect().remove();
+    }
+  });
+
+  connectionsRef.on("value", (snap) => {
+    const count = snap.numChildren();
+    document.getElementById("live-count").innerText = count;
+  });
+</script>
+  <!-- End Firebase SDKs -->
   </body>
 </html>
